@@ -8,6 +8,7 @@
     "email": "1035924544@qq.com"
   },
   "scripts": {
+    "prestart": "npm run obfuscate",
     "prebuild": "npm run obfuscate",
     "obfuscate": "javascript-obfuscator render/js/ --self-defending true --identifier-names-generator mangled-shuffled",
     "start": "chcp 65001 && electron .",
@@ -24,14 +25,13 @@
     "appId": "screen record tool",
     "copyright": "SprWu",
     "productName": "屏幕录制工具",
-    "directiories": {
+    "directories": {
       "output": "build"
     },
     "win": {
       "icon": "./render/recorder.ico"
     },
     "nsis": {
-      "include": "./installer.nsh",
       "oneClick": false,
       "perMachine": true,
       "runAfterFinish": true,

@@ -4,10 +4,19 @@ const sourcesBox = document.querySelector('#sources-box')
 sourcesBox.addEventListener('click', event => {
     const target = event.path.find(node => node?.classList?.contains('source'))
     if (target) {
-        window.opener.postMessage({ name: target.dataset.name, id: target.dataset.id })
+        window.opener.postMessage({
+            type: 'selected',
+            data: { name: target.dataset.name, id: target.dataset.id }
+        })
         window.close()
     }
 }, false)
+
+window.onbeforeunload = () => {
+    window.opener.postMessage({
+        type: 'close'
+    })
+}
 
 window.listenCapture(sources => {
     const fragment = document.createDocumentFragment()

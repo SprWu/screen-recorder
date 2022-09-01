@@ -1,11 +1,13 @@
 const tip = document.querySelector('#tip-box .tip'),
     captureName = document.querySelector('#tip-box .capture-name'),
+    captureTime = document.querySelector('#tip-box .capture-time'),
     targetBtn = document.querySelector('#target'),
     startBtn = document.querySelector('#start'),
     stopBtn = document.querySelector('#stop');
 
 // 录制工具状态枚举
 const PENDING = 'pending', // 待选择捕获窗口
+    SELECTING = 'selecting', // 正在选择
     CAPTURE = 'capture', // 已选择捕获窗口且成功获取视频流
     RECORD = 'record'; // 正在录制
 
@@ -20,17 +22,20 @@ let status = PENDING // 录制工具状态
 const notCaptureTip = '请选择捕获窗口',
     errorCaptureTip = '窗口视频流获取出错，请重新选择',
     captureTip = '捕获窗口：',
-    recordTip = '正在录制：',
+    recordTip = '正在录制',
     endTip = '录制结束：';
 
 /**
  * 打开捕获窗口选择窗口
  */
 function openCaptureWindow() {
-    if (status === RECORD || targetBtn.classList.contains('disable')) {
+    if (status === RECORD || status === SELECTING || targetBtn.classList.contains('disable')) {
         return void 0
     }
-    captureWindow = window.open('capture.html')
+    captureWindow ??= window.open('capture.html')
+    targetBtn.classList.add('disable')
+    startBtn.classList.add('disable')
+    status = SELECTING
 }
 
 /**
@@ -74,14 +79,18 @@ function startRecord() {
     if (sourceId !== undefined && recordStream !== undefined) {
         // 储存捕获的视频内容
         let chunk = []
+        let recordTime = 0, timerPt
         recorder = new MediaRecorder(recordStream, {
             mimeType: 'video/webm; codecs=h264'
         })
 
         recorder.onstop = () => {
+            clearInterval(timerPt)
             // 停止视频流
             recordStream?.getTracks()?.forEach(track => track.stop())
             tip.textContent = endTip
+            recordTime = 0
+            captureTime.textContent = ''
             downloadRecordFile(chunk)
             status = PENDING
             targetBtn.classList.remove('disable')
@@ -96,6 +105,14 @@ function startRecord() {
         recorder.ondataavailable = e => chunk.push(e.data)
 
         recorder.start()
+        clearInterval(timerPt)
+        captureTime.textContent = '(00:00):'
+        timerPt = window.setInterval(() => {
+            recordTime++
+            captureTime.textContent = formatTime(recordTime)
+        }, 1000)
+
+        tip.textContent = recordTip
         status = RECORD
         targetBtn.classList.add('disable')
         startBtn.classList.add('disable')
@@ -139,9 +156,21 @@ stopBtn.addEventListener('click', stopRecord)
 
 window.addEventListener('message', evt => {
    if (evt.origin === 'file://') {
-       let { name, id } = evt.data
-       tip.textContent = captureTip
-       getCaptureStream(name, id)
+       let message = evt.data
+       if (message.type === 'close') {
+           captureWindow = undefined
+           if (sourceId === undefined) {
+               status = PENDING
+           } else {
+               status = CAPTURE
+               startBtn.classList.remove('disable')
+           }
+           targetBtn.classList.remove('disable')
+       } else {
+           let { name, id } = message.data
+           tip.textContent = captureTip
+           getCaptureStream(name, id)
+       }
    }
 })
 
@@ -160,3 +189,12 @@ window.listenKeyboardEvent(execType => {
             break;
     }
 })
+
+/**
+ * 将秒数格式化为 分:秒
+ * @param time 秒数
+ */
+function formatTime(time) {
+    let minutes = ~~(time / 60), seconds = time %= 60
+    return `(${minutes.toString().padStart(2, 0)}:${seconds = time.toString().padStart(2, 0)}):`
+}

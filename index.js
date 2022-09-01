@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, desktopCapturer, Menu, globalShortcut } = r
 
 const gotTheLock = app.requestSingleInstanceLock()
 
-let mainWindow, intervalPt
+let mainWindow, intervalPt, childWindowCount = 0
 
 if (gotTheLock) {
     app.on('second-instance', () => {
@@ -45,21 +45,28 @@ function createMainWindow() {
 
     // 控制新窗口打开
     mainWindow.webContents.setWindowOpenHandler(() => {
-        return {
-            action: 'allow',
-            overrideBrowserWindowOptions: {
-                useContentSize: true,
-                center: true,
-                fullscreenable: false,
-                width: 990,
-                height: 470,
-                parent: mainWindow,
-                resizable: false,
-                autoHideMenuBar: true,
-                icon: './render/recorder.ico',
-                webPreferences: {
-                    preload: app.getAppPath() + '/capturePreload.js'
+        if (childWindowCount === 0) {
+            childWindowCount++
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    useContentSize: true,
+                    center: true,
+                    fullscreenable: false,
+                    width: 990,
+                    height: 470,
+                    parent: mainWindow,
+                    resizable: false,
+                    autoHideMenuBar: true,
+                    icon: './render/recorder.ico',
+                    webPreferences: {
+                        preload: app.getAppPath() + '/capturePreload.js'
+                    }
                 }
+            }
+        } else {
+            return {
+                action: 'deny'
             }
         }
     })
@@ -68,6 +75,7 @@ function createMainWindow() {
     mainWindow.webContents.on('did-create-window', captureWindow => {
         captureWindow.webContents.on('destroyed', () => {
             clearInterval(intervalPt)
+            childWindowCount = 0
             if (mainWindow.isMinimized()) {
                 mainWindow.restore()
             }

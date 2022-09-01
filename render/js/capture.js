@@ -30,13 +30,15 @@ window.listenCapture(sources => {
         thumbnail.src = source.thumbnail
         const info = document.createElement('div')
         info.classList.add('info')
-        const icon = document.createElement('img')
-        icon.classList.add('source-icon')
-        icon.src = source.appIcon
         const name = document.createElement('span')
         name.classList.add('source-name')
         name.textContent = source.name
-        info.appendChild(icon)
+        if (source.name !== '整个屏幕') {
+            const icon = document.createElement('img')
+            icon.classList.add('source-icon')
+            icon.src = source.appIcon
+            info.appendChild(icon)
+        }
         info.appendChild(name)
         div.appendChild(thumbnail)
         div.appendChild(info)

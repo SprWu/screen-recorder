@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>录制工具</title>
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self';default-src 'unsafe-inline' 'self'">
+    <link rel="icon" href="recorder.ico" />
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/tool.css">
+</head>
+<body>
+    <div id="tip-box">
+        <span class="tip">请选择捕获窗口</span>
+        <span class="capture-name"></span>
+    </div>
+    <div class="btn-box">
+        <div class="btn" id="target" title="选择捕获窗口(Shift+Alt+C)">
+            <i class="iconfont icon-mubiao"></i>
+        </div>
+        <div class="btn disable" id="start" title="开始录制(Shift+Alt+R)">
+            <i class="iconfont icon-play-circle-line"></i>
+        </div>
+        <div class="btn disable" id="stop" title="停止录制并保存(Shift+Alt+E)">
+            <i class="iconfont icon-stop-circle-line"></i>
+        </div>
+    </div>
+</body>
+<script src="js/tool.js"></script>
+</html>

@@ -1,0 +1,52 @@
+body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
+
+@layer icon {
+    #start {
+        color: #67C23A;
+    }
+    #stop {
+        color: #F56C6C;
+    }
+}
+
+#tip-box {
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    text-align: center;
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 86px;
+    padding: 0 10px;
+}
+.btn {
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 6px;
+}
+.btn:hover {
+    background: #E4E7ED;
+}
+
+.btn-box .iconfont {
+    font-size: 64px;
+}
+.btn-box .disable {
+    color: #909399;
+    cursor: not-allowed;
+}
+.btn-box .disable:hover {
+    background: initial;
+}

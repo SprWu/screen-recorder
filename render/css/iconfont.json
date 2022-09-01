@@ -1,0 +1,30 @@
+{
+  "id": "3622703",
+  "name": "recorder",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "23237718",
+      "name": "结束录制-line",
+      "font_class": "stop-circle-line",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "9319209",
+      "name": "目标",
+      "font_class": "mubiao",
+      "unicode": "e828",
+      "unicode_decimal": 59432
+    },
+    {
+      "icon_id": "23237903",
+      "name": "开始录制-line",
+      "font_class": "play-circle-line",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    }
+  ]
+}

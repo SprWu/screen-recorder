@@ -48,10 +48,16 @@ function getCaptureStream(name ,id) {
         recordStream.getTracks().forEach(track => track.stop())
     }
     navigator.mediaDevices.getUserMedia({
+        audio: {
+            mandatory: {
+                chromeMediaSource: 'desktop'
+            }
+        },
         video: {
             mandatory: {
                 chromeMediaSource: 'desktop',
-                chromeMediaSourceId: id
+                chromeMediaSourceId: id,
+                maxFrameRate: 60
             }
         }
     }).then(stream => {

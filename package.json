@@ -3,7 +3,10 @@
   "version": "1.1.0",
   "description": "使用MediaRecorder API制作的屏幕录制工具",
   "main": "index.js",
-  "keywords": ["record", "MediaRecorder"],
+  "keywords": [
+    "record",
+    "MediaRecorder"
+  ],
   "bugs": {
     "email": "1035924544@qq.com"
   },
@@ -17,7 +20,7 @@
   "author": "SprWu",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^20.1.0",
+    "electron": "^23.1.4",
     "electron-builder": "^23.3.3",
     "javascript-obfuscator": "^4.0.0"
   },

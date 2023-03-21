@@ -63,6 +63,7 @@ function getCaptureStream(name ,id) {
     }).then(stream => {
         recordStream = stream
         captureName.textContent = name
+        captureName.title = name
         sourceId = id
         startBtn.classList.remove('disable')
         status = CAPTURE

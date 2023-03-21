@@ -2,7 +2,7 @@ let recordStream, recorder
 
 const sourcesBox = document.querySelector('#sources-box')
 sourcesBox.addEventListener('click', event => {
-    const target = event.path.find(node => node?.classList?.contains('source'))
+    const target = event.composedPath().find(node => node?.classList?.contains('source'))
     if (target) {
         window.opener.postMessage({
             type: 'selected',

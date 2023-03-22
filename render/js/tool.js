@@ -98,7 +98,13 @@ function startRecord() {
             tip.textContent = endTip
             recordTime = 0
             captureTime.textContent = ''
-            downloadRecordFile(chunk)
+            // if (true) {
+            //     convertToMp4(chunk).then(url => {
+            //         download(url, 'mp4')
+            //     })
+            // } else {
+                download(convertToWebm(chunk))
+            // }
             status = PENDING
             targetBtn.classList.remove('disable')
             startBtn.classList.add('disable')
@@ -139,20 +145,30 @@ function stopRecord() {
     }
 }
 
-/**
- * 下载录制文件
- * @param file 视频录制的chunk
- */
-function downloadRecordFile(file) {
-    const blob = new Blob(file, { type: 'video/webm' })
-    const url = URL.createObjectURL(blob)
+function convertToWebm(chunk) {
+    return URL.createObjectURL(new Blob(chunk, { type: 'video/webm' }))
+}
+
+async function convertToMp4(chunk) {
+    const file = new File(chunk, 'temp.webm', { type: 'video/webm' })
+    const { createFFmpeg, fetchFile } = FFmpeg
+    const ffmpeg = createFFmpeg({ log: true })
+    await ffmpeg.load()
+    ffmpeg.FS('writeFile', 'temp.webm', await fetchFile(file))
+    await ffmpeg.run('-i', 'temp.webm', '-s', '1920x1080', '-c:v', 'libx264', 'temp.mp4')
+    const data = ffmpeg.FS('readFile', 'temp.mp4')
+    ffmpeg.exit()
+    return URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }))
+}
+
+function download(objectURL, suffix = 'webm') {
+    const fileName = `录制-${Date.now()}.${suffix}`
     const a = document.createElement('a')
-    const fileName = `录制-${Date.now()}.webm`
-    a.href = url
+    a.href = objectURL
     a.download = fileName
-    a.click()
     captureName.textContent = fileName
-    URL.revokeObjectURL(url)
+    a.click()
+    URL.revokeObjectURL(a.href)
 }
 
 targetBtn.addEventListener('click', openCaptureWindow)

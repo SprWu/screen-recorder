@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, desktopCapturer, Menu, globalShortcut } = require('electron')
+const { join } = require("path")
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -80,6 +81,13 @@ function createMainWindow() {
                 mainWindow.restore()
             }
         })
+    })
+
+    // 拦截并自定义响应头，以启用跨域隔离，使用 SharedArrayBuffer
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        details.responseHeaders['Cross-Origin-Opener-Policy'] = ['same-origin'];
+        details.responseHeaders['Cross-Origin-Embedder-Policy'] = ['require-corp'];
+        callback({ responseHeaders: details.responseHeaders });
     })
 
     mainWindow.loadFile('./render/tool.html').then(() => {
